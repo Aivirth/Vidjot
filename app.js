@@ -31,10 +31,18 @@ app.get('/', (req, res)=>{
     });
 });
 
-//index route
+//about route
 app.get('/about', (req, res)=>{
     const title = 'About';
     res.render('about', {
+        title : title
+    });
+});
+
+//add idea form
+app.get('/ideas/add', (req, res)=>{
+    const title = 'Add new video idea';
+    res.render('ideas/add', {
         title : title
     });
 });
