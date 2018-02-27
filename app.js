@@ -52,6 +52,23 @@ app.get('/ideas/add', (req, res)=>{
     });
 });
 
+//edit idea form
+app.get('/ideas/edit/:id', (req, res)=>{
+    const pageTitle = 'Edit video idea';
+    Idea.findOne({
+        _id : req.params.id
+    })
+    .then(idea => {
+        res.render('ideas/edit', {
+            pageTitle : pageTitle,
+            idea : idea
+        });
+    })
+    .catch(err => console.log(err));
+
+    
+});
+
 //render ideas page
 app.get('/ideas', (req, res)=>{
     Idea.find({})
