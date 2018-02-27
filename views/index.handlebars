@@ -1,5 +1,10 @@
 <div class="jumbotron text-center">
   <h1 class="display-3">{{title}}</h1>
   <p class="lead">Jot down ideas for your next youtube videos</p>
-  <a href="/ideas/add" class="btn btn-dark btn-lg">Add Video Idea</a>
+  <a href="/ideas/add" class="btn btn-dark btn-lg mb-2">Add Video Idea</a>
+  <form action="/ideas/{{idea.id}}?_method=DELETE" method="post">
+    <input type="hidden" name="_method" value="DELETE" />
+    <input type="submit" class="btn btn-danger btn-block" value="Delete">
+  </form>
+  
 </div>

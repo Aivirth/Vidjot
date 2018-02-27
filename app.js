@@ -79,8 +79,7 @@ app.get('/ideas', (req, res)=>{
             res.render('ideas/index', {
                 ideas : ideas
             })
-        })
-    
+        })    
 });
 
 //process form
@@ -130,6 +129,15 @@ app.put('/ideas/:id', (req, res)=>{
                 res.redirect('/ideas');
             });
     })
+    .catch(err => console.log(err));
+});
+
+//delete form process
+app.delete('/ideas/:id', (req, res)=>{
+    Idea.remove({
+        _id : req.params.id
+    })
+    .then(() => {res.redirect('ideas')})
     .catch(err => console.log(err));
 });
 
