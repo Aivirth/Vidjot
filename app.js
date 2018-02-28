@@ -5,6 +5,7 @@ var methodOverride = require('method-override');
 const flash = require('connect-flash');
 const session = require('express-session');
 const bodyParser = require('body-parser');
+const passport = require('passport');
 const mongoose = require('mongoose');
 
 
@@ -14,6 +15,9 @@ const app = express();
 //Load Routes
 const ideas = require('./routes/indeas');
 const users = require('./routes/users');
+
+//passport config
+require('./config/passport')(passport);
 
 // Connect to mongoose
 mongoose.connect('mongodb://localhost/vidjot-dev')
@@ -42,6 +46,10 @@ app.use(session({
     saveUninitialized: true
 }));
 
+// passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
 //flash middleware
 app.use(flash());
 
@@ -50,6 +58,7 @@ app.use((req, res, next)=>{
     res.locals.success_msg = req.flash('success_msg');
     res.locals.err_msg = req.flash('err_msg');
     res.locals.error = req.flash('error');
+    res.locals.user = req.user || null;
     next();
 });
 
