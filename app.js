@@ -1,6 +1,8 @@
 const express = require('express');
 const exphbs = require('express-handlebars');
 var methodOverride = require('method-override');
+const flash = require('connect-flash');
+const session = require('express-session');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
@@ -17,6 +19,7 @@ mongoose.connect('mongodb://localhost/vidjot-dev')
 require('./models/Idea');
 const Idea = mongoose.model('ideas');
 
+/////////////////////////////////////////////////
 //handlebars middleware
 app.engine('handlebars', exphbs({
     defaultLayout: 'main'
@@ -27,9 +30,28 @@ app.set('view engine', 'handlebars');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+//session middleware
+app.use(session({
+    secret: 'secret',
+    resave: true,
+    saveUninitialized: true
+}));
+
+//flash middleware
+app.use(flash());
+
+//global variables
+app.use((req, res, next)=>{
+    res.locals.success_msg = req.flash('success_msg');
+    res.locals.err_msg = req.flash('err_msg');
+    res.locals.error = req.flash('error');
+    next();
+});
+
 // method override middleware
 app.use(methodOverride('_method'));
 
+////////////////////////////////////////
 //index route
 app.get('/', (req, res)=>{
     const title = 'Index';
@@ -108,7 +130,8 @@ app.post('/ideas', (req, res)=>{
         new Idea(newUser)
             .save()
             .then(idea => {
-                res.redirect('/ideas')
+                req.flash('success_msg', 'Video idea added');
+                res.redirect('/ideas');
             })
             .catch(err => console.log(err));
     }
@@ -126,6 +149,7 @@ app.put('/ideas/:id', (req, res)=>{
 
         idea.save()
             .then(idea => {
+                req.flash('success_msg' , 'Video Idea Edited');
                 res.redirect('/ideas');
             });
     })
@@ -137,7 +161,10 @@ app.delete('/ideas/:id', (req, res)=>{
     Idea.remove({
         _id : req.params.id
     })
-    .then(() => {res.redirect('ideas')})
+    .then(() => {
+        req.flash('success_msg' , 'Video Idea Removed');
+        res.redirect('/ideas');
+    })
     .catch(err => console.log(err));
 });
 
